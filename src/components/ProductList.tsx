@@ -1,55 +1,90 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { Product, ProductCard } from './ProductCard';
+import RootStackParamList from '../navigation/types';
 
-const DEMO_PRODUCTS: Product[] = [
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+interface Product {
+  id: number;
+  name: string;
+  price: string;
+  image: string;
+}
+
+const products: Product[] = [
   {
-    id: '1',
-    name: 'Cappotto lana premium',
-    price: 129.9,
-    image: 'https://images.unsplash.com/photo-1516826957135-700dedea698c?q=80&w=1200&auto=format&fit=crop',
+    id: 1,
+    name: 'Giacca di pelle',
+    price: '€199',
+    image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3cbb?w=800',
   },
   {
-    id: '2',
-    name: 'Giacca bomber',
-    price: 89.9,
-    image: 'https://images.unsplash.com/photo-1520975954732-35dd22f475f2?q=80&w=1200&auto=format&fit=crop',
+    id: 2,
+    name: 'Camicia bianca',
+    price: '€49',
+    image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=800',
   },
   {
-    id: '3',
-    name: 'Maglione cashmere',
-    price: 79.9,
-    image: 'https://images.unsplash.com/photo-1520975928316-218f2ec790d1?q=80&w=1200&auto=format&fit=crop',
+    id: 3,
+    name: 'Pantaloni beige',
+    price: '€79',
+    image: 'https://images.unsplash.com/photo-1544441892-24c1e9f0f0b4?w=800',
   },
   {
-    id: '4',
-    name: 'Pantalone dritto',
-    price: 59.9,
-    image: 'https://images.unsplash.com/photo-1520975693416-d1e281eda33a?q=80&w=1200&auto=format&fit=crop',
-  },
-  {
-    id: '5',
-    name: 'Camicia oversize',
-    price: 49.9,
-    image: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=1200&auto=format&fit=crop',
-  },
-  {
-    id: '6',
-    name: 'Sneakers minimal',
-    price: 99.9,
-    image: 'https://images.unsplash.com/photo-1520256862855-398228c41684?q=80&w=1200&auto=format&fit=crop',
+    id: 4,
+    name: 'Sneakers classiche',
+    price: '€89',
+    image: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800',
   },
 ];
 
-export const ProductList: React.FC<{ items?: Product[] }> = ({ items = DEMO_PRODUCTS }) => {
+export const ProductList: React.FC = () => {
+  const navigation = useNavigation<NavigationProp>();
+
+  const container = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+    gap: '1.5rem',
+  };
+
+  const card = {
+    border: '1px solid #e9ecef',
+    borderRadius: '16px',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+  };
+
+  const img = {
+    width: '100%',
+    height: '280px',
+    objectFit: 'cover' as const,
+    display: 'block',
+  };
+
+  const body = {
+    textAlign: 'center' as const,
+    padding: '1rem',
+  };
+
   return (
-    <div className="container">
-      <div className="row g-4">
-        {items.map((p) => (
-          <div key={p.id} className="col-6 col-md-4 col-lg-3">
-            <ProductCard {...p} />
+    <div style={container}>
+      {products.map((p) => (
+        <div
+          key={p.id}
+          style={card}
+          onClick={() => navigation.navigate('Product', { id: String(p.id) })}
+        >
+          <img src={p.image} alt={p.name} style={img} />
+          <div style={body}>
+            <h6 style={{ fontWeight: 600 }}>{p.name}</h6>
+            <p style={{ color: '#6c757d' }}>{p.price}</p>
+            <button className="btn btn-outline-dark btn-sm">Vedi Dettagli</button>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };

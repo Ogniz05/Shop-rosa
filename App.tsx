@@ -1,6 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
 import { AppNavigator } from './src/navigation/AppNavigator';
-import './src/styles/global.css';
 
 export default function App() {
   return <AppNavigator />;
