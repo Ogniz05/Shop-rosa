@@ -1,48 +1,65 @@
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React from 'react';
-import RootStackParamList from '../navigation/types';
+import React from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 
-type Navigation = NativeStackNavigationProp<RootStackParamList, 'Home'>;
-
-export interface Product {
+type ProductCardProps = {
   id: string;
   name: string;
   price: number;
-  image: string;
-}
+  imageUri: string;
+  onPress?: () => void;
+};
 
-export const ProductCard: React.FC<Product> = ({ id, name, price, image }) => {
-  const navigation = useNavigation<Navigation>();
+export default function ProductCard({ name, price, imageUri, onPress }: ProductCardProps) {
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 768;
+  const cardWidth = isDesktop ? width * 0.22 : width * 0.46;
 
   return (
-    <div className="card h-100 shadow-sm border-0">
-      <div className="overflow-hidden">
-        <img
-          src={image}
-          alt={name}
-          style={{
-            width: '100%',
-            height: 'auto',
-            cursor: 'pointer',
-            transition: 'transform 0.3s ease',
-          }}
-          onClick={() => navigation.navigate('Product', { id })}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        />
-      </div>
-
-      <div className="card-body text-center">
-        <h6 className="fw-semibold mb-2">{name}</h6>
-        <p className="fw-bold mb-3">€ {price.toFixed(2)}</p>
-        <button
-          className="btn btn-primary btn-sm w-100"
-          onClick={() => alert(`Aggiunto al carrello: ${name}`)}
-        >
-          Aggiungi al carrello
-        </button>
-      </div>
-    </div>
+    <TouchableOpacity
+      style={[styles.card, { width: cardWidth }]}
+      onPress={onPress}
+      activeOpacity={0.9}
+    >
+      <View style={styles.imageWrapper}>
+        <Image source={{ uri: imageUri }} style={[styles.image, { height: cardWidth * 1.3 }]} />
+      </View>
+      <View style={styles.info}>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.price}>€ {price.toFixed(2)}</Text>
+      </View>
+    </TouchableOpacity>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: "#f6f6f6",  // più soft, tipo carta fotografica
+    marginBottom: 28,
+    borderRadius: 6,
+    overflow: "hidden",
+  },
+  imageWrapper: {
+    backgroundColor: "#eaeaea", // 👈 leggermente diverso per effetto “box neutro”
+  },
+  image: {
+    width: "100%",
+    resizeMode: "cover",
+  },
+  info: {
+    marginTop: 10,
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  name: {
+    fontSize: 14,
+    color: "#111",
+    fontFamily: "serif",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  price: {
+    fontSize: 13,
+    color: "#555",
+    marginTop: 3,
+  },
+});

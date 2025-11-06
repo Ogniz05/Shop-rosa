@@ -1,20 +1,24 @@
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React from 'react';
-import RootStackParamList from '../navigation/types';
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
-export const Footer: React.FC = () => {
-  const navigation = useNavigation<NavigationProp>();
-
+export default function Footer() {
   return (
-    <footer>
-      <p>© {new Date().getFullYear()} MyShop — Tutti i diritti riservati</p>
-      <p>
-        <span onClick={() => navigation.navigate('Policy')}>Privacy Policy</span> |{' '}
-        <span onClick={() => navigation.navigate('Terms')}>Termini e Condizioni</span>
-      </p>
-    </footer>
+    <View style={styles.footer}>
+      <Text style={styles.text}>© 2025 Shop Rosa</Text>
+    </View>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  footer: {
+    borderTopWidth: 1,
+    borderColor: "#eee",
+    paddingVertical: 10,
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  text: {
+    color: "#777",
+    fontSize: 12,
+  },
+});

@@ -1,5 +1,10 @@
-import React from 'react';
+import React from "react";
+import { Text, View } from "react-native";
 
-export const LoginScreen: React.FC = () => {
-  return <h2>Pagina di Login</h2>;
-};
+export default function LoginScreen() {
+  return (
+    <View>
+      <Text>Login Screen</Text>
+    </View>
+  );
+}

@@ -1,36 +1,45 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
-import RootStackParamList from './types';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
 
-// Componenti
-import { Footer } from '../components/Footer';
-import { Header } from '../components/Header';
-import { HomeScreen } from '../screens/HomeScreen';
-import { LoginScreen } from '../screens/LoginScreen';
-import { PolicyScreen } from '../screens/PolicyScreen';
-import { ProductScreen } from '../screens/ProductScreen';
-import { TermsScreen } from '../screens/TermsScreen';
+import MainLayout from "../components/MainLayout";
+import HomeScreen from "../screens/HomeScreen";
+import LoginScreen from "../screens/LoginScreen";
+import ProductScreen from "../screens/ProductScreen";
+
+export type RootStackParamList = {
+  Home: undefined;
+  Product: undefined;
+  Login: undefined;
+};
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator: React.FC = () => {
   return (
-    <NavigationContainer>
-      <Header />
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{ headerShown: false }}
+    >
+      {/* ✅ Home senza MainLayout (Header sarà gestito dentro la Home stessa) */}
+      <Stack.Screen name="Home" component={HomeScreen} />
 
-      <Stack.Navigator
-        initialRouteName="Home"
-        screenOptions={{ headerShown: false }}
-      >
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Product" component={ProductScreen} />
-        <Stack.Screen name="Terms" component={TermsScreen} />
-        <Stack.Screen name="Policy" component={PolicyScreen} />
-      </Stack.Navigator>
-
-      <Footer />
-    </NavigationContainer>
+      {/* ✅ Le altre schermate usano MainLayout con Header + Footer */}
+      <Stack.Screen
+        name="Product"
+        component={() => (
+          <MainLayout>
+            <ProductScreen />
+          </MainLayout>
+        )}
+      />
+      <Stack.Screen
+        name="Login"
+        component={() => (
+          <MainLayout>
+            <LoginScreen />
+          </MainLayout>
+        )}
+      />
+    </Stack.Navigator>
   );
 };

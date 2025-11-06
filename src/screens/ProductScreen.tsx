@@ -1,5 +1,10 @@
-import React from 'react';
+import React from "react";
+import { Text, View } from "react-native";
 
-export const ProductScreen: React.FC = () => {
-  return <h2>Dettagli prodotto</h2>;
-};
+export default function ProductScreen() {
+  return (
+    <View>
+      <Text>Product Screen</Text>
+    </View>
+  );
+}
