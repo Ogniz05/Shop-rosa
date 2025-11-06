@@ -5,13 +5,14 @@ import MainLayout from "../components/MainLayout";
 import HomeScreen from "../screens/HomeScreen";
 import LoginScreen from "../screens/LoginScreen";
 import ProductScreen from "../screens/ProductScreen";
+import ShopScreen from "../screens/ShopScreen";
 
 export type RootStackParamList = {
   Home: undefined;
-  Product: { item: { id: string; name: string; price: number; image: string } };
+  Product: undefined;
   Login: undefined;
+  Shop: undefined;
 };
-
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -21,10 +22,23 @@ export const AppNavigator: React.FC = () => {
       initialRouteName="Home"
       screenOptions={{ headerShown: false }}
     >
-      {/* ✅ Home senza MainLayout (Header sarà gestito dentro la Home stessa) */}
-      <Stack.Screen name="Home" component={HomeScreen} />
-
-      {/* ✅ Le altre schermate usano MainLayout con Header + Footer */}
+      {/* ✅ Tutte con MainLayout */}
+      <Stack.Screen
+        name="Home"
+        component={() => (
+          <MainLayout>
+            <HomeScreen />
+          </MainLayout>
+        )}
+      />
+      <Stack.Screen
+        name="Shop"
+        component={() => (
+          <MainLayout>
+            <ShopScreen />
+          </MainLayout>
+        )}
+      />
       <Stack.Screen
         name="Product"
         component={() => (
