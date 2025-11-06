@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import Footer from "./Footer";
 import Header from "./Header";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -8,7 +7,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <View style={styles.container}>
       <Header />
       <View style={styles.content}>{children}</View>
-      <Footer />
+      
     </View>
   );
 }

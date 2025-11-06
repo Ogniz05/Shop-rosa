@@ -8,9 +8,10 @@ import ProductScreen from "../screens/ProductScreen";
 
 export type RootStackParamList = {
   Home: undefined;
-  Product: undefined;
+  Product: { item: { id: string; name: string; price: number; image: string } };
   Login: undefined;
 };
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

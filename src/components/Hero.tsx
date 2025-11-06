@@ -5,30 +5,22 @@ export default function Hero() {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 768;
 
-  // Altezza complessiva della sezione
   const heroHeight = isDesktop ? width * 0.46 : width * 0.9;
-
-  // 🎨 Controllo proporzioni bianco/rosa
-  const whiteHeight = heroHeight * 0.20; // ⬅️ meno bianco sopra
-  const pinkHeight = heroHeight * 0.80;  // ⬅️ più rosa, arriva fino alla spalla
+  const whiteHeight = heroHeight * 0.20;
+  const pinkHeight = heroHeight * 0.80;
 
   return (
     <View style={[styles.container, { height: heroHeight }]}>
-      {/* Sfondo bianco sopra */}
       <View style={[styles.whiteBackground, { height: whiteHeight }]} />
-
-      {/* Sfondo rosa sotto */}
       <View
         style={[
           styles.pinkBackground,
           {
-            height: pinkHeight * 0.72, // 👈 estendi un po' oltre per coprire l'area
-            bottom: heroHeight * 0.1, // 👈 fine rosa perfettamente ai piedi
+            height: pinkHeight * 0.72,
+            bottom: heroHeight * 0.1,
           },
         ]}
       />
-
-      {/* Immagine modella */}
       <Image
         source={require("../../assets/images/modella-hero.png")}
         style={[
@@ -48,10 +40,11 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     position: "relative",
     backgroundColor: "#fff",
     overflow: "hidden",
+    zIndex: 1,
   },
   whiteBackground: {
     position: "absolute",
