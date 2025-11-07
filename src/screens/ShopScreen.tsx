@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   Animated,
   FlatList,
@@ -11,31 +11,45 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import Footer from "../components/Footer";
 import { PRODUCTS } from "../data/products";
 
 export default function ShopScreen() {
   const { width } = useWindowDimensions();
   const numColumns = width > 1024 ? 3 : width > 768 ? 2 : 1;
 
-  // 🎬 Animazione nativa per opacità + movimento verticale
-  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const opacity = useRef(new Animated.Value(1)).current;
   const translateY = useRef(new Animated.Value(0)).current;
 
+  const [hidden, setHidden] = useState(false);
+  const isAnimating = useRef(false);
+
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offset = e.nativeEvent.contentOffset.y;
-    const toValue = offset > 40 ? 1 : 0;
+    const y = e.nativeEvent.contentOffset.y;
+    if (y > 40 && !hidden && !isAnimating.current) hideBox();
+    if (y < 10 && hidden && !isAnimating.current) showBox();
+  };
 
-    Animated.timing(fadeAnim, {
-      toValue: toValue === 1 ? 0 : 1,
-      duration: 180,
-      useNativeDriver: true,
-    }).start();
+  const hideBox = () => {
+    isAnimating.current = true;
+    Animated.parallel([
+      Animated.timing(opacity, { toValue: 0, duration: 130, useNativeDriver: true }),
+      Animated.timing(translateY, { toValue: -50, duration: 130, useNativeDriver: true }),
+    ]).start(({ finished }) => {
+      if (finished) setHidden(true);
+      isAnimating.current = false;
+    });
+  };
 
-    Animated.timing(translateY, {
-      toValue: toValue === 1 ? -60 : 0, // sposta verso l’alto
-      duration: 180,
-      useNativeDriver: true,
-    }).start();
+  const showBox = () => {
+    isAnimating.current = true;
+    setHidden(false);
+    opacity.setValue(0);
+    translateY.setValue(-50);
+    Animated.parallel([
+      Animated.timing(opacity, { toValue: 1, duration: 130, useNativeDriver: true }),
+      Animated.timing(translateY, { toValue: 0, duration: 130, useNativeDriver: true }),
+    ]).start(() => (isAnimating.current = false));
   };
 
   const cardWidth = (width - (numColumns + 1) * 24) / numColumns;
@@ -43,20 +57,17 @@ export default function ShopScreen() {
 
   return (
     <View style={styles.container}>
-      {/* BOX animato: si muove e svanisce (GPU) */}
-      <Animated.View
-        style={[
-          styles.headerBox,
-          {
-            opacity: fadeAnim,
-            transform: [{ translateY }],
-          },
-        ]}
-      >
-        <Text style={styles.title}>Tutti i nostri capi</Text>
-      </Animated.View>
+      {!hidden && (
+        <Animated.View
+          style={[
+            styles.headerBox,
+            { opacity, transform: [{ translateY }] },
+          ]}
+        >
+          <Text style={styles.title}>Tutti i nostri capi</Text>
+        </Animated.View>
+      )}
 
-      {/* Griglia prodotti */}
       <FlatList
         data={PRODUCTS}
         keyExtractor={(item) => item.id}
@@ -67,10 +78,15 @@ export default function ShopScreen() {
           numColumns > 1 ? { justifyContent: "space-between" } : undefined
         }
         contentContainerStyle={styles.grid}
+        ListFooterComponent={
+          <View style={styles.footerWrapper}>
+            <Footer />
+          </View>
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             style={[styles.card, { width: cardWidth, height: cardHeight }]}
-            onPress={() => console.log("Vai a prodotto:", item.name)}
+            onPress={() => console.log("Vai a:", item.name)}
           >
             <Image source={{ uri: item.image }} style={styles.image} />
             <View style={styles.info}>
@@ -86,10 +102,8 @@ export default function ShopScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
+
   headerBox: {
     backgroundColor: "#fff",
     alignItems: "center",
@@ -103,8 +117,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 0.5,
   },
+
   grid: {
-    paddingBottom: 120,
+    paddingBottom: 60,
     paddingHorizontal: 24,
     rowGap: 24,
   },
@@ -118,30 +133,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 3,
   },
-  image: {
-    width: "100%",
-    height: "75%",
-    resizeMode: "cover",
-  },
-  info: {
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    alignItems: "flex-start",
-  },
-  new: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#999",
-    textTransform: "uppercase",
-  },
-  name: {
-    fontSize: 15,
-    marginTop: 2,
-    color: "#111",
-  },
-  price: {
-    fontSize: 14,
-    color: "#444",
-    marginTop: 4,
+  image: { width: "100%", height: "75%", resizeMode: "cover" },
+  info: { paddingVertical: 10, paddingHorizontal: 12, alignItems: "flex-start" },
+  new: { fontSize: 11, fontWeight: "600", color: "#999", textTransform: "uppercase" },
+  name: { fontSize: 15, marginTop: 2, color: "#111" },
+  price: { fontSize: 14, color: "#444", marginTop: 4 },
+
+  footerWrapper: {
+    marginTop: 40,
   },
 });

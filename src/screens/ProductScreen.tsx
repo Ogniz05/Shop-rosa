@@ -10,6 +10,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import Footer from "../components/Footer"; // 👈 import del footer
 import { PRODUCTS } from "../data/products";
 
 export default function ProductScreen() {
@@ -22,7 +23,7 @@ export default function ProductScreen() {
 
   const recommended = PRODUCTS.sort(() => 0.5 - Math.random()).slice(0, 3);
 
-  // Animazione del menù a tendina
+  // 🔽 Animazione menù dettagli
   const [expanded, setExpanded] = useState(false);
   const animation = useRef(new Animated.Value(0)).current;
 
@@ -38,7 +39,7 @@ export default function ProductScreen() {
 
   const heightInterpolation = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 80], // altezza dinamica del contenuto
+    outputRange: [0, 80],
   });
 
   return (
@@ -58,7 +59,7 @@ export default function ProductScreen() {
             ))}
           </View>
 
-          {/* 🔽 Menù a tendina con animazione fluida */}
+          {/* 🔽 Menù a tendina */}
           <TouchableOpacity onPress={toggleDropdown}>
             <Text style={styles.dropdownTitle}>Dettagli prodotto</Text>
           </TouchableOpacity>
@@ -114,6 +115,9 @@ export default function ProductScreen() {
           ))}
         </ScrollView>
       </View>
+
+      {/* 👇 Footer in fondo alla pagina */}
+      <Footer />
     </ScrollView>
   );
 }
@@ -131,7 +135,7 @@ const styles = StyleSheet.create({
   },
   infoSection: {
     width: "40%",
-    alignItems: "center", // 👈 centra tutto orizzontalmente
+    alignItems: "center",
   },
   name: {
     fontSize: 22,
